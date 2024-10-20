@@ -19,16 +19,16 @@ import heatmapcsv from "../../csvData/messages_data-2.csv";
 import combocsv from "../../csvData/ComboChart.csv";
 import "../../css/AnimatedBox.css";
 
-const Dashboard = ({ isSidebar }) => {
+const Dashboard = ({ isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [timePeriod, setTimePeriod] = useState("daily");
 
   return (
-    <div className={`dashboard ${isSidebar ? '' : 'collapsed'}`}>
+    <div className={`dashboard ${isCollapsed ? '' : 'collapsed'}`}>
       <Box
         sx={{
-          marginLeft: isSidebar ? "80px" : "250px",
+          marginLeft: isCollapsed ? "80px" : "250px",
           padding: "10px",
           height: "100vh",
           overflowY: "auto",

@@ -22,14 +22,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import { Padding } from "@mui/icons-material";
 
-const Topbar = () => {
+const Topbar = ({authToken, setAuthToken}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [user, setUser] = useState({});
   // const [avalable, setAvalable] = useState(false);
   const botUsername = "LoginTtbot";
-  const [authToken, setAuthToken] = useState("");
+  
   const generateTelegramLoginURL = () => {
     // Construct the Telegram login URL with your bot username and auth token
     const telegramLoginURL = `tg://resolve?domain=${botUsername}&start=${authToken}`;
@@ -37,12 +37,8 @@ const Topbar = () => {
   }
 
   
-
+  //function to direct to Telegram
   const click = () => {
-    // const [loginError, setLoginError] = useState(false);
-   
-  // Function to handle the Telegram login
- 
     const url = generateTelegramLoginURL();
 
     if (url && !(navigator.userAgent.indexOf("Firefox") > -1)) {

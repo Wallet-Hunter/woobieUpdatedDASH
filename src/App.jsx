@@ -15,6 +15,7 @@ import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
+import { collectSystemDetails, saveDetailsToBackend, trackClicks } from "./utils/sessionDetails";
 
 // Component to handle capturing the ID and redirecting
 function IdCaptureRedirect() {
@@ -31,13 +32,8 @@ function IdCaptureRedirect() {
       console.log(`Captured ID: ${id}`); // Debugging
     if (id) {
       // Save ID to state if needed and then redirect
-     
-      
       navigate("/home"); // Redirect to home after capturing ID
-
       fetch(`http://127.0.0.1:8000/userInfo/${id}`).then(response => response.json()).then(data => localStorage.setItem("data", JSON.stringify(data)));
-      
-      
       //set the id to the local storage
     }
   }else{
@@ -53,28 +49,62 @@ function IdCaptureRedirect() {
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
-  // const [user, setUser] = useState({});
-  // setUser(localStorage.getItem("data"));
-  const handleSidebarToggle = () => {
-    setIsSidebar((prev) => !prev);
-  };
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [authToken, setAuthToken] = useState(false);
+  const [points, setPoints] = useState([]); // Track click points (added v1)
+  const [sessionDetails, setSessionDetails] = useState({}); // Store session details (added v1)
+
+  //(added v1)
+  useEffect(() => { 
+    // Fetch system details once on page load (including the IP)
+    const initializeSessionDetails = async () => {
+      const details = await collectSystemDetails();
+      setSessionDetails(details); // Store the details with IP in the state
+    };
+
+    initializeSessionDetails();
+
+    // Add click event listener to track clicks without making API calls
+    const handleClick = (event) => trackClicks(event, points, setPoints);
+    document.addEventListener("click", handleClick);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, [points]);
+  //(added v1)
+  useEffect(() => {
+    // Send collected data to the backend when user leaves the page
+    const handleBeforeUnload = async () => {
+      if (points.length > 0) {
+        const updatedSessionDetails = { ...sessionDetails, clickData: points };
+        await saveDetailsToBackend(updatedSessionDetails);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [sessionDetails, points]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar isSidebar={isSidebar} />
+          <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} authToken={authToken}/>
           <main className="content">
-            <Topbar setIsSidebar={handleSidebarToggle} />
+            <Topbar authToken={authToken} setAuthToken={setAuthToken} />
             <Routes>
               {/* Route for capturing ID and redirecting */}
               <Route path="/:id" element={<IdCaptureRedirect />} />
               
               {/* Other routes */}
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/home" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />} />
+              <Route path="/home" element={<Dashboard isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />} />
               <Route path="/communitymanagement" element={<CommunityManagementPage />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />

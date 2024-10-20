@@ -12,11 +12,20 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { useNavigate } from 'react-router-dom';
 
 
-const Item = ({ title, to, icon, selected, setSelected,disabled }) => {
+
+const Item = ({ title, to, icon, selected, setSelected,disabled, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const handleClick = () => {
+    if (onClick) {
+      onClick(); // Call the custom click handler if provided
+    } else {
+      setSelected(title);
+    }
+  };
   return (
     <MenuItem
       active={selected === title}
@@ -32,7 +41,7 @@ const Item = ({ title, to, icon, selected, setSelected,disabled }) => {
           },
         })
       }}
-      onClick={() => !disabled && setSelected(title)} // Only update if not disabled
+      onClick={handleClick}  // Only update if not disabled
       icon={icon}
       disabled={disabled} // Disable click
     >
@@ -42,11 +51,25 @@ const Item = ({ title, to, icon, selected, setSelected,disabled }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({isCollapsed, setIsCollapsed, authToken }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const navigate = useNavigate();
+  //function to redirect to login for community management 
+  const handleCommunityManagementClick = () => {
+    const botUsername = "LoginTtbot";
+    const url = `tg://resolve?domain=${botUsername}&start=${authToken}`;
+    if(authToken) {
+      let anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.target = "_blank";
+      anchor.click();
+      anchor.remove();
+    }else {
+      navigate('/communitymanagement');
+    }
+  }
 
   return (
     <Box
@@ -142,10 +165,11 @@ const Sidebar = () => {
 
             <Item
               title="Community Management"
-              to="/communitymanagement"
+              to="#"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              onClick={handleCommunityManagementClick}
             />
             <Item
               title="Lead Generation"
