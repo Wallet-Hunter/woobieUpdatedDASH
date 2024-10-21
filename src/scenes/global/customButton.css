@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+.container {
+    position: relative;
+    width: 550px; /* Set an appropriate width for the dialog */
+    height: 420px; /* Set an appropriate height for the dialog */
+    display: flex;
+    justify-content: center; /* Center the button */
+    align-items: center;
+    left: -70px;
+}
+
+.circle {
+    position: absolute;
+    justify-content: center; /* Center the button */
+    align-items: center;
+    left: 1px;
+}
+
+.container span {
+    position: absolute;
+    width: 32px;
+    height: 6px;
+    background: #2c4766;
+    border-radius: 4px;
+    transform-origin: 90px; /* Adjust the radius of the rotating circle */
+    transform: scale(2.2) rotate(calc(var(--i) * (360deg / 50)));
+    animation: animateBlink 3s linear infinite;
+    animation-delay: calc(var(--i) * (3s / 50));
+}
+
+@keyframes animateBlink {
+    0% {
+        background: #0ef;
+    }
+    25% {
+        background: #2c4766;
+    }
+}
+
+.button-container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Ensure button is on top */
+    margin-left: 150px;
+}
+
+.login-button {
+    margin: auto;
+    padding: 10px 20px;
+    color: #ffffff;
+    background: #54a9eb;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    z-index: 2; /* Ensure button is on top */
+}
+
+.login-button:hover {
+    background: #4a98d5; /* Darker shade on hover */
+}
+
+/* Optional: Adding transition for hover effect */
+.login-button {
+    transition: background 0.3s ease;
+}
+
+/* Adjust the button icon */
+.login-button svg {
+    margin-right: 8px; /* Space between icon and text */
+    transition: transform 0.3s ease; /* Smooth transition for icon */
+}
+
+.login-button:hover svg {
+    transform: rotate(15deg); /* Optional: Rotate icon on hover */
+}

@@ -4,7 +4,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 
-const Form = () => {
+const Form = ({ isCollapsed }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
@@ -13,7 +13,7 @@ const Form = () => {
 
   return (
     <Box m="20px"sx={{
-      marginLeft: '250px', // Match this to the sidebar's expanded width
+      marginLeft: isCollapsed ? '80px' :'250px', // Match this to the sidebar's expanded width
       padding: '20px', // Add some padding if needed
       height: '100vh', // Full viewport height
       overflowY: 'auto', // Allow vertical scrolling

@@ -15,7 +15,7 @@ import {
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 
-const Calendar = () => {
+const Calendar = ({ isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [currentEvents, setCurrentEvents] = useState([]);
@@ -48,7 +48,7 @@ const Calendar = () => {
 
   return (
     <Box m="20px"sx={{
-      marginLeft: '250px', // Match this to the sidebar's expanded width
+      marginLeft: isCollapsed ? '80px' : '250px', // Match this to the sidebar's expanded width
       padding: '20px', // Add some padding if needed
       height: '100vh', // Full viewport height
       overflowY: 'auto', // Allow vertical scrolling

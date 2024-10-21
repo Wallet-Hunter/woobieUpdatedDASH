@@ -7,12 +7,12 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { tokens } from "../../theme";
 
-const FAQ = () => {
+const FAQ = ({ isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <Box m="20px"sx={{
-      marginLeft: '250px', // Match this to the sidebar's expanded width
+      marginLeft: isCollapsed ? '80px':'250px', // Match this to the sidebar's expanded width
       padding: '20px', // Add some padding if needed
       height: '100vh', // Full viewport height
       overflowY: 'auto', // Allow vertical scrolling
